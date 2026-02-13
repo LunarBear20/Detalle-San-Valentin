@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para ti 💌</title>
+<style>
+body{
+    margin:0;
+    font-family:"Segoe UI",sans-serif;
+    background:linear-gradient(135deg,#ffd6e7,#ffeaf4,#fff6fb);
+    overflow-x:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    flex-direction:column;
+}
+
+/* estrellas */
+.star{
+    position:fixed;
+    width:4px;
+    height:4px;
+    background:white;
+    border-radius:50%;
+    animation:twinkle 2s infinite alternate;
+}
+@keyframes twinkle{
+    from{opacity:.3}
+    to{opacity:1}
+}
+
+/* flores cayendo (solo rosadas) */
+.flowerFall{
+    position:fixed;
+    top:-50px;
+    font-size:22px;
+    animation:fall linear forwards;
+}
+@keyframes fall{
+    to{
+        transform:translateY(110vh);
+        opacity:0;
+    }
+}
+
+/* contador */
+#contador{
+    position:fixed;
+    top:10px;
+    right:12px;
+    background:rgba(255, 182, 193, 0.9);
+    color:#fff;
+    padding:10px 15px;
+    border-radius:15px;
+    font-size:16px;
+    font-weight:600;
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+    text-align:center;
+    z-index: 9999; /* <- contador siempre visible */
+}
+
+/* contenedor carta */
+.cardContainer{
+    perspective:1000px;
+    max-width:600px;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+/* SOBRE rosado */
+.envelope{
+    position:relative;
+    width:240px;
+    height:160px;
+    background:#ffb6c9;
+    border-radius:12px;
+    cursor:pointer;
+    box-shadow:0 15px 40px rgba(0,0,0,.15);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:600;
+    color:white;
+    font-size:18px;
+    user-select:none;
+    transition:transform 0.5s;
+    margin-bottom:20px;
+}
+.envelope:hover{
+    transform:scale(1.05);
+}
+
+/* fase 2 - texto corto + botón */
+#fase2{
+    display:none;
+    text-align:center;
+}
+#fase2 p{
+    color:#555;
+    font-size:16px;
+    margin-bottom:12px;
+    line-height:1.8;
+    letter-spacing:0.5px;
+}
+#fase2 button{
+    margin-top:15px;
+    padding:12px 22px;
+    border:none;
+    border-radius:20px;
+    background:#ff9bb8;
+    color:white;
+    font-size:15px;
+    cursor:pointer;
+    animation:bounce 2s infinite;
+}
+@keyframes bounce{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-6px)}
+}
+
+/* carta blanca dentro */
+.card{
+    background:white;
+    padding:40px 30px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow:0 15px 40px rgba(0,0,0,0.1);
+    position:relative;
+    width:300px;
+    max-width:90vw;
+    overflow-wrap: break-word;
+    transform:scaleY(0);
+    transform-origin:top;
+    transition:transform 1s;
+}
+
+/* carta abierta */
+.card.open{
+    transform:scaleY(1);
+}
+
+/* flor latiendo */
+.flower{
+    font-size:70px;
+    animation:pulse 2s infinite;
+}
+
+/* texto máquina */
+#msg{
+    margin-top:20px;
+    white-space:pre-wrap;
+    color:#e75480;
+    font-weight:500;
+    display:none;
+    font-size:16px;
+    text-align:center;
+    line-height:1.8;
+    letter-spacing:0.5px;
+    padding:0 10px;
+}
+
+/* final */
+#final{
+    margin-top:20px;
+    color:#ff8fb1;
+    font-weight:600;
+    display:block;
+}
+</style>
+</head>
+<body>
+
+<div id="contador"></div>
+
+<div class="cardContainer">
+    <!-- Fase 1: SOBRE rosado -->
+    <div class="envelope" id="envelope" onclick="mostrarFase2()">
+        Toca aquí
+    </div>
+
+    <!-- Fase 2: Texto corto + botón -->
+    <div id="fase2">
+        <p>Gracias por estar en mi vida.<br>Tu compañía hace todos mis días diferentes ✨</p>
+        <button onclick="abrirCarta()">Haz click aquí 💌</button>
+    </div>
+
+    <!-- Fase 3: Carta con texto personal -->
+    <div class="card" id="tarjeta">
+        <div class="flower">🌸</div>
+        <p id="msg"></p>
+        <p id="final">"Feliz 14 de febrero"🩷</p>
+    </div>
+</div>
+
+<script>
+/* estrellas */
+for(let i=0;i<35;i++){
+    const s=document.createElement("div");
+    s.className="star";
+    s.style.top=Math.random()*100+"vh";
+    s.style.left=Math.random()*100+"vw";
+    document.body.appendChild(s);
+}
+
+/* flores rosadas cayendo */
+setInterval(()=>{
+    const f=document.createElement("div");
+    f.className="flowerFall";
+    f.innerText="🌸";
+    f.style.left=Math.random()*100+"vw";
+    f.style.animationDuration=(4+Math.random()*3)+"s";
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(),7000);
+},500);
+
+/* contador desde 29/10/2025 */
+const inicio = new Date("2025-10-29T00:00:00");
+function actualizar(){
+    const ahora = new Date();
+    const diff = ahora - inicio;
+    const dias = Math.floor(diff / 86400000);
+    const horas = Math.floor(diff / 3600000) % 24;
+    const min = Math.floor(diff / 60000) % 60;
+    const seg = Math.floor(diff / 1000) % 60;
+    document.getElementById("contador").innerText =
+        `${dias}d ${horas}h ${min}m ${seg}s 💕 desde 29/10/2025`;
+}
+setInterval(actualizar,1000);
+actualizar();
+
+/* Fase 1 -> Fase 2 */
+function mostrarFase2(){
+    document.getElementById("envelope").style.display="none";
+    document.getElementById("fase2").style.display="block";
+}
+
+/* texto máquina de escribir */
+const texto=`Hola Gabriela, quizas no lo esperabas pero queria darte unos pequeños detalles para hacer tu dia un poquito mas bonito, espero que te gusten, porque este texto es muy personal💭
+
+La verdad no me conformaba con solo uno, así que te hice varios con mucho cariño. 
+Como todavía no podemos vernos en persona, pensé que unos detalles virtuales también valían, ¿no?
+
+Te dibujé una peonía en la app y un lirio en Canva, porque sé que son tus flores favoritas. Quise que cada cosa tuviera algo pensado especialmente para ti.
+
+Gracias por tu compañía desde el día que te conocí, de verdad haces mis días más ligeros y felices con tanta facilidad✨ 
+El 29 de octubre se volvió una fecha muy importante para mí, porque desde ese día entraste a mi mundo.🪐
+
+Solo quiero que este detalle te saque aunque sea una sonrisa y te alegre el día🌹
+Me alegra mucho tenerte en mi vida y compartir momentos contigo.
+
+Sabes que te quiero mucho, ¿no? 💐
+te quiero demasiado, Gabriela. te valoro muchísimo. 
+
+ahora si, espero que te guste.`;
+
+function escribir(){
+    const el=document.getElementById("msg");
+    const final=document.getElementById("final");
+    el.style.display="block";
+    el.innerText="";
+    final.style.display="none";
+
+    let i=0;
+    const t=setInterval(()=>{
+        el.innerText+=texto[i];
+        i++;
+        if(i>=texto.length){
+            clearInterval(t);
+            final.style.display="block";
+        }
+    },18);
+}
+
+/* Fase 2 -> Fase 3 */
+function abrirCarta(){
+    document.getElementById("fase2").style.display="none";
+    const tarjeta=document.getElementById("tarjeta");
+    tarjeta.classList.add("open");
+    escribir();
+}
+</script>
+
+</body>
+</html>
